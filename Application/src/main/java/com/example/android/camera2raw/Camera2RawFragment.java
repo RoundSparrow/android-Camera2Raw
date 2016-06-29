@@ -719,6 +719,8 @@ public class Camera2RawFragment extends Fragment
                         Arrays.asList(map.getOutputSizes(ImageFormat.RAW_SENSOR)),
                         new CompareSizesByArea());
 
+                Log.i(TAG, "largest JPEG " + largestJpeg + " RAW " + largestRaw);
+
                 synchronized (mCameraStateLock) {
                     // Set up ImageReaders for JPEG and RAW outputs.  Place these in a reference
                     // counted wrapper to ensure they are only closed when all background tasks
@@ -726,7 +728,7 @@ public class Camera2RawFragment extends Fragment
                     if (mJpegImageReader == null || mJpegImageReader.getAndRetain() == null) {
                         mJpegImageReader = new RefCountedAutoCloseable<>(
                                 ImageReader.newInstance(largestJpeg.getWidth(),
-                                        largestJpeg.getHeight(), ImageFormat.JPEG, /*maxImages*/5));
+                                        largestJpeg.getHeight(), ImageFormat.JPEG, /*maxImages*/ 5));
                     }
                     mJpegImageReader.get().setOnImageAvailableListener(
                             mOnJpegImageAvailableListener, mBackgroundHandler);
@@ -1404,6 +1406,7 @@ public class Camera2RawFragment extends Fragment
 
             // If saving the file succeeded, update MediaStore.
             if (success) {
+                Log.i(TAG, "File saved " + mFile.toString() + " length " + mFile.length());
                 MediaScannerConnection.scanFile(mContext, new String[]{mFile.getPath()},
                 /*mimeTypes*/null, new MediaScannerConnection.MediaScannerConnectionClient() {
                     @Override
